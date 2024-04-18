@@ -1,0 +1,8 @@
+OCR/node_modules
+OCR/handleOCR/helpers/vision-ocr-311508-2df5a99e811b.json
+
+semantic/__pycache__
+semantic/helpers/__pycache__
+semantic/helpers/.env
+semantic/env
+semantic/usage.csv
