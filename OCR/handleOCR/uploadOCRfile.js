@@ -39,6 +39,9 @@ const uploadOCRfile = async (req, res) => {
 
         // await new Promise(resolve => setTimeout(resolve, 10000));  測試用
 
+        const lockFilePath = `${config.folderBasePath}${username}/.lock`;
+        await fs.promises.writeFile(lockFilePath, '');
+
         //回傳完後，再對每個檔案存進 /username/filename/, 後續 OCR 撈資料的地方
         await Promise.all(files.map(async (file) => {
 
@@ -51,10 +54,8 @@ const uploadOCRfile = async (req, res) => {
 
             // 檢查資料夾是否存在，並創建.lock
             const folderPath = `${config.folderBasePath}${username}/${fileNameWithExtension}/`;
-            const lockFilePath = `${config.folderBasePath}${username}/.lock`;
 
             await fs.promises.mkdir(folderPath, { recursive: true });
-            await fs.promises.writeFile(lockFilePath, '');
 
             // 取得原始文件的副檔名
             const ext = path.extname(file.originalname).toLowerCase();
@@ -102,12 +103,12 @@ const uploadOCRfile = async (req, res) => {
                     console.error(error);
                 }
             }
-            // 處理完成後删除 .lock 文件
-            if (fs.existsSync(lockFilePath)) {
-                console.log(lockFilePath);
-                fs.unlinkSync(lockFilePath);
-            }
         }));
+        // 處理完成後删除 .lock 文件
+        if (fs.existsSync(lockFilePath)) {
+            console.log(lockFilePath);
+            fs.unlinkSync(lockFilePath);
+        }
 
     } catch (error) {
         console.error(error);
